@@ -1,18 +1,19 @@
 #
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(tidyverse)
 library(openintro) 
 library(leaflet) 
 library(ggplot2)
 library(plotly)
+library("devtools")
+library(covidcast)
+library(maps)
+library(dplyr)
+library(choroplethr)
+library(choroplethrMaps)
+library("stringr") 
+data(county.regions)
+
 
 page_one <-tabPanel(
     "Introduction", # label for the tab in the navbar
@@ -42,7 +43,7 @@ page_two <- tabPanel( ##### AUDREYS PAGE
 
 # Define content for the second page
 page_three <- tabPanel( #### THOMAS PAGE
-    "Behavior", # label for the tab in the navbar
+    "Beliefs", # label for the tab in the navbar
     titlePanel("How Do Individual Beliefs Effect COVID Cases?"), # show with a displayed title
     
     # Sidebar with a slider input for number of bins 
@@ -119,21 +120,25 @@ page_three <- tabPanel( #### THOMAS PAGE
 
 
 # Define content for the third page
-page_four <- tabPanel( ##### SOPHIA PAGE
-    "Fourth Page", # label for the tab in the navbar
-    titlePanel("SOPHIA PAGE "), # show with a displayed title
-    
-    # This content uses a sidebar layout
-    sidebarLayout(
-        sidebarPanel(
-            h3("sidebar panel...")
-        ),
-        mainPanel(
-            h3("Primary Content"),
-            p("Plots, data tables, etc. would go here")
-        )
-    )
+state_names <- unique(county.regions$state.name)
+
+state_input <- selectInput(
+    inputId = "state",
+    choices = state_names,
+    label = "Choose a state below to start exploring:"
 )
+
+page_four <- tabPanel( ##### SOPHIA PAGE
+    "Behavior", # label for the tab in the navbar
+    titlePanel("How are individual behaviors reflected in COVID-19 cases?"), # show with a displayed title
+    state_input,
+    plotlyOutput(outputId = "rest_map"),
+    plotlyOutput(outputId = "mask_map"),
+    plotlyOutput(outputId = "covid_map")
+)
+
+
+
 page_five <-tabPanel(
     "Conclusion", # label for the tab in the navbar
     titlePanel("Page 5"),
@@ -234,6 +239,87 @@ server <- function(input, output) {
     
 
     ### SOPHIA CODE ####
+    output$rest_map <- renderPlotly({
+        
+        restaurant_data <- suppressMessages(
+            covidcast_signal(data_source = "fb-survey", signal = "smoothed_restaurant_1d",
+                             start_day = "2021-02-05", end_day = "2021-03-05",
+                             geo_type = "county")
+        )
+        
+        new_rest <- restaurant_data %>% 
+            group_by(geo_value) %>% 
+            summarize(geo_value, value = mean(value)) %>% 
+            distinct(geo_value, value) %>% 
+            mutate(region = as.numeric(str_remove(geo_value, "^0+"))) 
+        
+        
+        rest_map <- county_choropleth(new_rest,
+                                      title = "Proportion of Respondents Who Visited a Bar, Restaurant, or Cafe in the Past 24 Hours",
+                                      legend = "Proportion of Respondents",
+                                      num_colors = 1,
+                                      state_zoom = input$state)
+        
+        ggplotly(rest_map)
+        
+        
+    })
+    
+    output$mask_map <- renderPlotly({
+        
+        
+        
+        mask_data <- suppressMessages(
+            covidcast_signal(data_source = "fb-survey", signal = "smoothed_wearing_mask",
+                             start_day = "2021-02-05", end_day = "2021-03-05",
+                             geo_type = "county")
+        )
+        
+        
+        new_mask <- mask_data %>% 
+            group_by(geo_value) %>% 
+            summarize(geo_value, value = mean(value)) %>% 
+            distinct(geo_value, value) %>% 
+            mutate(region = as.numeric(str_remove(geo_value, "^0+"))) 
+        
+        
+        
+        mask_map <- county_choropleth(new_mask,
+                                      title = "Percentage of People Who Report Wearing a Mask Most or All of the Time in Public",
+                                      legend = "Pecentage of Population",
+                                      num_colors = 1,
+                                      state_zoom = input$state)
+        
+        ggplotly(mask_map)
+    })
+    
+    output$covid_map <- renderPlotly({
+        
+        
+        
+        covid_data <- suppressMessages(
+            covidcast_signal(data_source = "indicator-combination", signal = "confirmed_cumulative_prop",
+                             start_day = "2021-02-05", end_day = "2021-03-05",
+                             geo_type = "county")
+        )
+        
+        
+        new_covid <- covid_data %>% 
+            group_by(geo_value) %>% 
+            summarize(geo_value, value = mean(value)) %>% 
+            distinct(geo_value, value) %>% 
+            mutate(region = as.numeric(str_remove(geo_value, "^0+"))) 
+        
+        
+        
+        covid_map <- county_choropleth(new_covid,
+                                       title = "Cumulative Reported COVID-19 Cases per 100,000 People",
+                                       legend = "Cases per 100,000 People",
+                                       num_colors = 1,
+                                       state_zoom = input$state)
+        
+        ggplotly(covid_map)
+    })
     
     
 }
