@@ -11,6 +11,7 @@ library(dplyr)
 library(choroplethr)
 library(choroplethrMaps)
 library(stringr) 
+library(scales)
 data(county.regions)
 
 
@@ -23,19 +24,22 @@ page_one <-tabPanel(
     
   )
 )
+# Define content for third page
+anxious_data <- read.csv("anxious_data.csv")
+depressed_data <- read.csv("depressed_data.csv")
+isolated_data <- read.csv("felt_isolated_data.csv")
 
 page_two <- tabPanel( ##### AUDREYS PAGE
-  "Second Page", # label for the tab in the navbar
-  titlePanel("AUDREY PAGE"), # show with a displayed title
+  "Emotions", # label for the tab in the navbar
+  titlePanel("How are individual emotions related to COVID rates"), # show with a displayed title
   
   # This content uses a sidebar layout
   sidebarLayout(
     sidebarPanel(
-      h3("sidebar panel...")
+      selectInput("states", "Choose a State", unique(depressed_data$geo_value), selected = "ak"), 
     ),
     mainPanel(
-      h3("Primary Content"),
-      p("Plots, data tables, etc. would go here")
+      plotlyOutput("my_scatterplot")
     )
   )
 )
@@ -165,7 +169,30 @@ server <- function(input, output) {
   
   
   #### AUDREY CODE ####
-  
+  output$my_scatterplot <- renderPlotly({
+    state <- input$states
+    # prepare data for anxiety
+    data1 <- anxious_data %>%
+      filter(geo_value == state)
+    data1$time_value <- as.Date(data1$time_value)
+    #prepare data for depressed
+    data2 <- depressed_data %>%
+      filter(geo_value == state)
+    data2$time_value <- as.Date(data2$time_value)
+    
+    # prepare data for isolated
+    data3 <- isolated_data%>%
+      filter(geo_value == state)
+    data3$time_value <- as.Date(data3$time_value)
+    
+    scatterplot<-ggplot()+
+      geom_line(data=data1, mapping = aes(x = time_value, y=value), color = "red")+
+      geom_line(data=data2, mapping = aes(x=time_value, y=value), color = "blue")+
+      geom_line(data=data3, mapping = aes(x=time_value, y=value), color = "green")+
+      scale_x_date(labels = date_format("%m-%Y"))
+    
+    ggplotly(scatterplot)
+  }) 
   
   #### THOMAS CODE ####
   output$myPlot <- renderPlotly({
