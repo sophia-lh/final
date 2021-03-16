@@ -186,11 +186,14 @@ server <- function(input, output) {
     data3$time_value <- as.Date(data3$time_value)
     
     scatterplot<-ggplot()+
-      geom_line(data=data1, mapping = aes(x = time_value, y=value), color = "red")+
-      geom_line(data=data2, mapping = aes(x=time_value, y=value), color = "blue")+
-      geom_line(data=data3, mapping = aes(x=time_value, y=value), color = "green")+
-      scale_x_date(labels = date_format("%m-%Y"))
-    
+      geom_line(data=data1, mapping = aes(x = time_value, y=value, label = "Anxious"), color = "red")+
+      geom_line(data=data2, mapping = aes(x = time_value, y=value, label = "Depressed"), color = "blue")+
+      geom_line(data=data3, mapping = aes(x = time_value, y=value, label = "Isolated"), color = "green")+
+      scale_x_date(labels = date_format("%m-%Y")) +
+      scale_fill_discrete(labels = c("Control", "red" = "Anxiety", "Treatment 2")) +
+      labs(y = "% Participants Feeling",
+           x = "Date")
+
     ggplotly(scatterplot)
   }) 
   
