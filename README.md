@@ -1,9 +1,4 @@
 
-img[src$="centerme"] {
-  display:block;
-  margin: 0 auto;
-}
-
 ![COVID Misinformation](www/covidochio.jpeg)
 
 # Research Context
@@ -12,7 +7,7 @@ Over the past year, our social norms and mores have changed drastically in respo
 
 # Project Description
 
-In this project, the authors hope to provide a dynamic visual exploration of how local social practices, beliefs, and sentiments concerning the pandemic might influence the spread and death toll of the disease in the U.S. at the county and state levels. While misinformation and conspiracism have become central to U.S. politics, the extent to which COVID-19 denialism and misinformation have influenced the spread of the disease remains unclear. Through interactive visualizations, the viewer can easily choose particular relationships to better understand links between localized opinions and public health metrics. Please access the project [HERE](DDDDDDD).
+In this project, the authors hope to provide a dynamic visual exploration of how local social practices, beliefs, and sentiments concerning the pandemic might influence the spread and death toll of the disease in the U.S. at the county and state levels. While misinformation and conspiracism have become central to U.S. politics, the extent to which COVID-19 denialism and misinformation have influenced the spread of the disease remains unclear. Through interactive visualizations, the viewer can easily choose particular relationships to better understand links between localized opinions and public health metrics. Please access the project [HERE](https://jsherm.shinyapps.io/GroupAC6FinalProject/).
 
 # Datasets
 

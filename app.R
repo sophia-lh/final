@@ -189,7 +189,7 @@ ui <- fluidPage(
   ),
 
   navbarPage(
-  "Group 6", # application title
+  "Group AC6", # application title
   page_one,         # include the first page content
   page_two,         # include the second page content
   page_three,        # include the third page content
