@@ -17,11 +17,21 @@ data(county.regions)
 
 page_one <-tabPanel(
   "Introduction", # label for the tab in the navbar
-  titlePanel("Page 1"),
   fluidPage(
-    
-    h3("blah blah blah blah blah")
-    
+    div(
+    h3("Authors"),
+    p("Audrey Dennis, Sophia Lowe-Hines, Jack Sherman, Thomas Wilson"),
+    p(br()),
+    h3("Research Context"),
+    p("Over the past year, our social norms and mores have changed drastically in response to the global public health crisis of COVID-19. Quotidian gestures such as the handshake seem now a kind of archaic imprudence resigned to the back-then and keeping up to date on current events seems to necessitate becoming an amateur epidemiologist. However, as the imperfect U.S. response to the pandemic has shown, opinions concerning everything from proper shutdown stringency to mask-wearing and vaccine safety can differ greatly. Indeed, last year has shown that normal epidemiological proscriptions have not adequately addressed the difficult-to-quantify social irregularities that directly influence the spread of the disease. More often than not, discussions around preventative measures and epidemiological policies do not consider the socio-political sentiments, social practices, and personal beliefs that affect the efficacy of disease control at the community level. In spike forecasting, mandating preventative guidelines, and planning vaccine distribution, understanding local sentiments and beliefs about COVID-19 is crucial."),
+    p(br()),
+    h3("Project Description"),
+    p("In this project, the authors hope to provide a dynamic visual exploration of how local social practices, beliefs, and sentiments concerning the pandemic might influence the spread and death toll of the disease in the U.S. at the county and state levels. While misinformation and conspiracism have become central to U.S. politics, the extent to which COVID-19 denialism and misinformation have influenced the spread of the disease remains unclear. Through interactive visualizations, the viewer can easily choose particular relationships to better understand links between localized opinions and public health metrics."),
+    p(br()),
+    h3("Datasets"),
+    p("This project uses the Carnegie Mellon University Delphi Group research, specifically the Delphi's COVID-19 Survey data. This is a current geographic location tagged social media survey in which participants report personal and local social-distancing practices, personal beliefs concerning vaccines, and mental health information. Additionally, this project uses the New York Times COVID-19 data which provides continuously updated data on coronavirus spread and death counts at the county, state, and national levels."),
+    p(br())
+    )
   )
 )
 # Define content for third page
@@ -39,7 +49,11 @@ page_two <- tabPanel( ##### AUDREYS PAGE
       selectInput("states", "Choose a State", unique(depressed_data$geo_value), selected = "ak"), 
     ),
     mainPanel(
-      plotlyOutput("my_scatterplot")
+      plotlyOutput("my_scatterplot"),
+      div(
+        p(br()),
+        p("Plot of responses to survey about COVID-induced mental health difficulties over time (since Jan 2021). The green curve represents the percentage of participants who felt isolated, the red curve for those who felt anxious, and the blue curve for those who felt depressed.")
+      )
     )
   )
 )
@@ -115,12 +129,15 @@ page_three <- tabPanel( #### THOMAS PAGE
     
     # Show a plot of the generated distribution
     mainPanel(
-      plotlyOutput("myPlot")
+      plotlyOutput("myPlot"),
+      
+      div(
+        p(br()),
+        p("Plots the percentage of participants afraid of getting sick/the percentage of participants who would receive a COVID-19 vaccine against cases by U.S. state.")
+      )
     )
   )
 )
-
-
 
 # Define content for the third page
 state_names <- unique(county.regions$state.name)
@@ -134,6 +151,10 @@ state_input <- selectInput(
 page_four <- tabPanel( ##### SOPHIA PAGE
   "Behavior", # label for the tab in the navbar
   titlePanel("How are individual behaviors reflected in COVID-19 cases?"), # show with a displayed title
+    div( p(br()),
+    p("Maps percentage of participants who visited social eateries, percentage of participants who wear a mask in public, and COVID cases by county for each U.S. state. Please allow for load-time."),
+    p(br())
+  ),
   state_input,
   plotlyOutput(outputId = "rest_map"),
   plotlyOutput(outputId = "mask_map"),
@@ -144,11 +165,18 @@ page_four <- tabPanel( ##### SOPHIA PAGE
 
 page_five <-tabPanel(
   "Conclusion", # label for the tab in the navbar
-  titlePanel("Page 5"),
   fluidPage(
-    
-    h3("blah blah blah blah blah")
-    
+    div( 
+      h3("Emotions Visual"),
+      p("Since January 2021, part of the Delphi research has been a daily social media survey on participants' mental health and coping with the pandemic by state. Overall, most states exhibit downward trends but appear to have relatively higher rates in locations with recent spikes (NY, NJ, etc). The link between mental health and pandemic-influenced stress is self-evident, but not apparently useful as an indicator of spread. However, being able to represent localized sentiments and to gauge the mental health effects of containment measures at the community level may be of value to researchers attempting to predict the broader local sentiments that do affect COVID's spread. Furthermore, the results of the survey appear promising. Texas's trends, for instance, suggest that the survey data is responsive, if not accurate, as the three curves spike suddenly around the time of the February 2021 Texas power crisis. While it would not be reasonable to conclude that these exact measures of mental distress affect spread, the authors argue that the data could be indicative of other, more useful metrics."),
+      p(br()),
+      h3("Beliefs Visual"),
+      p("Plots for prevalence of vaccine acceptance and cases by state appear to generally follow a decreasing trend. As survey sentiment scores for vaccine acceptance increase, the county case numbers generally decrease. While this relationship is promising, the potential of a particular sentiment to be used as an indicator for spread MUST be tempered with an effort to avoid an overly reductionist approach to the complex relationship (if indeed it exists) between community beliefs and case counts. That is, these models do not imply that the existence of antivax sentiments in a community necessarily mean higher cases. Rather, it implies that the metric of one particular sentiment might be indicative of a larger host of beliefs that do influence local spread. "),
+      p(br()),
+      h3("Behavior Visual"),
+      p("Through comparing covid cases by county with survey behavior data by county, certain patterns do emerge. Taking the state of California as an example, one sees that many of the counties reporting lower relative masking rates are also the counties with the higher reported cases. As masking is a proven measure against spread, the objective of this comparison is not to reiterate a known, but rather to draw attention to the correlation between the survey results and the COVID  cases. For California, the survey results for masking practices appear to be weakly correlated with case numbers and might have potential as an indicator. Unfortunately, for many states, there is weak to moderate correlation between masking and restaurant visit survey data and case numbers. Additionally, this, as well as the prevalence of missing county data, renders the relationships difficult to trust. Thus, for these comparisons, conclusions should be limited to flagging elements for further analysis."),
+      p(br())
+    )
   )
 )
 
@@ -265,7 +293,6 @@ server <- function(input, output) {
     
     
   })
-  
   
   ### SOPHIA CODE ####
   output$rest_map <- renderPlotly({
