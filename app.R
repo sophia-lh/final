@@ -181,13 +181,21 @@ page_five <-tabPanel(
 )
 
 # Pass each page to a multi-page layout (`navbarPage`)
-ui <- navbarPage(
-  "My Application", # application title
+ui <- fluidPage(
+  includeCSS("www/style.css"),
+  div(id = "mainTitle",
+  img(src = "cell.jpeg", id = "visflare"), 
+  titlePanel("SOCIAL SPREAD")
+  ),
+
+  navbarPage(
+  "Group 6", # application title
   page_one,         # include the first page content
   page_two,         # include the second page content
   page_three,        # include the third page content
   page_four, 
   page_five
+)
 )
 
 # Define server logic required to draw a histogram

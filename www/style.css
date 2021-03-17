@@ -1,0 +1,15 @@
+#mainTitle {
+  margin: 30px auto;
+  max-width: 1000px;
+  position: relative;
+  text-align: center;
+  font-family: Helvetica, sans-serif;
+}
+
+
+#visflare {
+  display: block;
+  width: 20%;
+  height: 20%;
+  margin: 0 auto;
+}
