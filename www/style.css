@@ -6,10 +6,24 @@
   font-family: Helvetica, sans-serif;
 }
 
+#title {
+  text-align: center;
+}
 
 #visflare {
-  display: block;
-  width: 20%;
-  height: 20%;
-  margin: 0 auto;
+  vertical-align: middle;
+  width: 7%;
+  height: 7%;
+}
+* {
+  font-family: Helvetica, sans-serif;
+}
+body {
+  background-color: rgba(203, 237, 255, 0.222);
+}
+h1 {
+  text-align: center;
+}
+img {
+  text-align: center;
 }
